@@ -1,0 +1,1 @@
+const MONGODB_KEY = process.env.MONGODB_KEY
