@@ -1,0 +1,23 @@
+DTI Trends Project Overview Milestone 1
+
+PM: Chris Chen
+Group Members: Chris Zhang & Kevin Xu
+
+Idea: Study Buddy
+
+Frontend Pages: Login Page, Input & Prompt Page, Results Page 
+
+    Login Page - nice design, two buttons (sign up and login), data is to be stored in mongodb atlas
+
+    Input & Prompt Page - user will add notes either via text or (pdf?) with a prompt, will be feeded into 
+    gpt model via api key
+
+    Results Page - upon inputting, user will be brought to result page, ai response fetched and displayed such as 
+    (practice questions, summarize key points, practice test, etc)
+
+    maybe implement some milestone thing or score thing as a fun thing to keep user engaged (diffierentiate from just inputting into ai themselves)
+
+??? should we store more data such as user previous questions in db? 
+??? what else can we do to make it a little more unique and useful as a product
+??? how should it look, what type of design
+??? WHAT ELSE TO ADD THAT IS FEASIBLE?
