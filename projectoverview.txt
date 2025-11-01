@@ -7,7 +7,7 @@ Idea: Study Buddy
 
 Frontend Pages: Login Page, Input & Prompt Page, Results Page 
 
-    Login Page - nice design, two buttons (sign up and login), data is to be stored in mongodb atlas
+    Login Page - nice design, two buttons (sign up and login), can login with email + password or login with Google, data is to be stored in mongodb atlas
 
     Input & Prompt Page - user will add notes either via text or (pdf?) with a prompt, will be feeded into 
     gpt model via api key
@@ -17,7 +17,7 @@ Frontend Pages: Login Page, Input & Prompt Page, Results Page
 
     maybe implement some milestone thing or score thing as a fun thing to keep user engaged (diffierentiate from just inputting into ai themselves)
 
-Backend Overview: storing data in mongodb atlas, post method to feed input into model, fetching response from api
+Backend Overview: storing data in mongodb atlas, post method to feed input into model, fetching response from api, firebase for user authentication
 
 ??? should we store more data such as user previous questions in db? 
 ??? what else can we do to make it a little more unique and useful as a product
