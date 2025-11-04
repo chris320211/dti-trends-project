@@ -4,11 +4,11 @@ FROM node:18-alpine
 # Set working directory
 WORKDIR /app
 
-# Copy package files (if they exist)
-COPY package*.json yarn.lock* ./
+# Copy package files
+COPY package*.json ./
 
-# Install dependencies if package.json exists
-RUN if [ -f package.json ]; then yarn install; fi
+# Install dependencies
+RUN npm install
 
 # Copy source code
 COPY . .
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 2020
 
 # Start the development server
-CMD ["yarn", "dev", "--host", "0.0.0.0"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
