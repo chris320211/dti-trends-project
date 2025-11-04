@@ -9,4 +9,4 @@ Stop Application:
 docker-compose down
 
 Server: Accessible at http://localhost:1010
-Client: Accessible at http://localhost:5173
+Client: Accessible at http://localhost:2020

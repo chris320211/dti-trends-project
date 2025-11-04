@@ -14,7 +14,7 @@ RUN if [ -f package.json ]; then yarn install; fi
 COPY . .
 
 # Expose port for Vite dev server
-EXPOSE 5173
+EXPOSE 2020
 
 # Start the development server
 CMD ["yarn", "dev", "--host", "0.0.0.0"]
