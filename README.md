@@ -1,12 +1,15 @@
-DEVELOPMENT WITH DOCKER
 
-Start Up:
+### Setup ENV
+
+cp .env.example .env
+
+### Start Up:
 
 docker-compose up --build
 
-Stop Application:
+### Stop Application:
 
 docker-compose down
 
-Server: Accessible at http://localhost:1010
-Client: Accessible at http://localhost:2020
+### Server: Accessible at http://localhost:1010
+### Client: Accessible at http://localhost:2020
