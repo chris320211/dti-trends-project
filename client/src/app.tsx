@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import LoginPage from './pages/Login';
 import PromptPage from './pages/Prompt';
 import ResultsPage from './pages/Results';
+import './app.css';
 
 const App: React.FC = () => {
     return (
