@@ -1,7 +1,10 @@
-import express, { Express } from "express";
+import express, { Express, Request, Response } from "express";
 import cors from 'cors';
 import dotenv from 'dotenv';
 import OpenAI from 'openai';
+
+// Load environment variables
+dotenv.config();
 
 const app: Express = express();
 const port = 1010;
@@ -23,15 +26,15 @@ const openai = new OpenAI({
 });
 
 // OpenAI Endpoint
-app.post('/api/chat', async (req: Request, res: Response)) => {
-  try{
-    const { message, model = 'gpt-4o-mini' } = requestAnimationFrame.body;
+app.post('/api/chat', async (req: Request, res: Response) => {
+  try {
+    const { message, model = 'gpt-4o-mini' } = req.body;
 
     if (!message) {
-      return resizeBy.status(400).json({error: 'Input message is required'});
+      return res.status(400).json({ error: 'Input message is required' });
     }
 
-    const completed = await openai.chat.completed.create({
+    const completed = await openai.chat.completions.create({
       model: model,
       messages: [
         {role: 'user', content: message}
@@ -47,12 +50,11 @@ app.post('/api/chat', async (req: Request, res: Response)) => {
       usage: completed.usage,
     });
 
-    catch (error: any) {
-      console.error('API error occured')
-      resizeBy.status(500).json({
-        success: false,
-        error: error.message
-      });
-    }
+  } catch (error: any) {
+    console.error('API error occurred:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
   }
-}
+});
