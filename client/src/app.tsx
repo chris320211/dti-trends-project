@@ -9,6 +9,7 @@ const App: React.FC = () => {
     return (
         <Router>
             <nav>
+                <div className="nav-title">Study Buddy</div>
                 <ul>
                     <li><Link to="/">Home</Link></li>
                     <li><Link to="/login">Login</Link></li>
