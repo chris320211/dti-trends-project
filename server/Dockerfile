@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package.json ./
 
 # Install dependencies
-RUN yarn install
+RUN npm install
 
 # Copy source code
 COPY . .
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 1010
 
 # Start the development server
-CMD ["yarn", "dev"]
+CMD ["npm", "run", "dev"]
