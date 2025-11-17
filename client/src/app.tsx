@@ -1,17 +1,21 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/Login';
-import PromptPage from './pages/Prompt';
-import ResultsPage from './pages/Results';
-import './app.css';
+import RegisterPage from './pages/Register';
+import HomePage from './pages/Home';
+import UploadPage from './pages/Upload';
+import PracticePage from './pages/Practice';
+import app from './app.css';
 
 const App: React.FC = () => {
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<LoginPage />} />
-                <Route path="/prompt" element={<PromptPage />} />
-                <Route path="/results" element={<ResultsPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/home" element={<HomePage />} />
+                <Route path="/upload" element={<UploadPage />} />
+                <Route path="/practice" element={<PracticePage />} />
             </Routes>
         </Router>
     );
