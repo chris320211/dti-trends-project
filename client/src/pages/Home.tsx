@@ -1,16 +1,14 @@
 import React from 'react';
 import NavigationBar from '../components/NavigationBar';
 import { Box, Grid } from "@mui/material";
-import UserStats from "../components/UserStats";
-import DailyGoal from "../components/DailyGoal";
+
 
 const HomePage: React.FC = () => {
   return (
     <div>
-        Home
+        <h1>home</h1>
     </div>
   );
 };
 
 export default HomePage;
-

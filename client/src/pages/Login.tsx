@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Paper, Container } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const LoginPage: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -69,9 +70,23 @@ const LoginPage: React.FC = () => {
                                 py: 1.5,
                                 fontSize: '1rem',
                                 textTransform: 'none',
+                                mb: 2,
                             }}
                         >
                             Sign In
+                        </Button>
+                        <Button
+                            component={Link}
+                            to="/register"
+                            fullWidth
+                            variant="outlined"
+                            sx={{
+                                py: 1.5,
+                                fontSize: '1rem',
+                                textTransform: 'none',
+                            }}
+                        >
+                            Create Account
                         </Button>
                     </Box>
                 </Paper>
