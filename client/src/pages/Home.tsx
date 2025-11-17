@@ -2,13 +2,10 @@ import React from 'react';
 import { Box, Typography, Paper, List, ListItem, ListItemText } from "@mui/material";
 
 const HomePage: React.FC = () => {
-  // For now, we'll use a placeholder username
-  // Later, this will come from your authentication system
   const username = "Student"; // TODO: Get from auth context/state
 
   return (
     <Box sx={{ padding: 4 }}>
-      {/* Welcome Message - Biggest Font */}
       <Typography 
         variant="h2" 
         component="h1" 
@@ -30,29 +27,29 @@ const HomePage: React.FC = () => {
             <List>
               <ListItem>
                 <ListItemText 
-                  primary="📚 Upload Your Notes"
+                  primary="Upload Notes"
                   secondary="Upload your study notes and let our AI generate practice questions to help you learn better."
                 />
               </ListItem>
               
               <ListItem>
                 <ListItemText 
-                  primary="❓ Practice Questions"
+                  primary="View Practice Questions"
                   secondary="The Practice tab shows all your uploaded notes and their corresponding practice questions. Click on any note to see its questions."
                 />
               </ListItem>
               
               <ListItem>
                 <ListItemText 
-                  primary="✅ Track Your Progress"
+                  primary="Track Your Progress"
                   secondary="Mark each question as done using checkboxes to keep track of what you've completed."
                 />
               </ListItem>
               
               <ListItem>
                 <ListItemText 
-                  primary="📊 View Your Stats"
-                  secondary="Check your Stats page to see your study streak, total questions answered, and other progress metrics."
+                  primary="View Stats"
+                  secondary="Check the Stats page to see your study streak, daily goals, total questions answered, and other progress metrics."
                 />
               </ListItem>
             </List>
