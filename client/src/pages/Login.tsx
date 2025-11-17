@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Paper, Container } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const LoginPage: React.FC = () => {
+    const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Login attempted with:', { username, password });
+        /// add auth
+        navigate('/home');
     };
 
     return (
@@ -38,7 +40,6 @@ const LoginPage: React.FC = () => {
                     <Box component="form" onSubmit={handleLogin} sx={{ width: '100%' }}>
                         <TextField
                             margin="normal"
-                            required
                             fullWidth
                             id="username"
                             label="Username"
@@ -51,7 +52,6 @@ const LoginPage: React.FC = () => {
                         />
                         <TextField
                             margin="normal"
-                            required
                             fullWidth
                             name="password"
                             label="Password"
