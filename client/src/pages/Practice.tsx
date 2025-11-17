@@ -1,15 +1,26 @@
 import React, { useState } from 'react';
 import { Box, Typography, Paper, Button, List, ListItem } from '@mui/material';
+
+//TODO: remove this later
 import { dummyNotes, Note } from '../constants/consts';
+
+
 import NoteView from '../components/NoteView';
 
 const PracticePage: React.FC = () => {
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
+    // Function to handle going back to the notes list
+    const handleBackToList = () => {
+        setSelectedNote(null);
+    };
+
+    // If a note is selected, show the NoteView component
     if (selectedNote) {
-        return <NoteView note={selectedNote} onBack={() => setSelectedNote(null)} />;
+        return <NoteView note={selectedNote} onBack={handleBackToList} />;
     }
 
+    // calculuate progress for each note
     const getProgress = (note: Note) => {
         const completed = note.questions.filter(q => q.completed).length;
         return `${completed}/${note.questions.length}`;
@@ -62,7 +73,7 @@ const PracticePage: React.FC = () => {
                                         variant="outlined"
                                         color="error"
                                         onClick={() => {
-                                            // TODO: add delete
+                                            // TODO: Implement delete functionality
                                             console.log('Delete note:', note.id);
                                         }}
                                         sx={{ textTransform: 'none' }}

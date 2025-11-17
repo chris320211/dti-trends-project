@@ -1,4 +1,3 @@
-// DailyGoalEditor.tsx
 import React, { useState } from "react";
 import { Typography, Stack, TextField, Button } from "@mui/material";
 import type { Goals } from "./DailyGoalPanel";

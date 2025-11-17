@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import NavigationBar from "./NavigationBar"; // the MUI navbar we wrote earlier
+import NavigationBar from "./NavigationBar"; 
 
 const MainLayout: React.FC = () => {
   return (

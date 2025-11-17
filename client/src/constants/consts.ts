@@ -13,8 +13,6 @@ export interface Note {
     questions: Question[];
 }
 
-// Dummy data - 3 notes with 5 questions each
-// TODO: Replace with MongoDB data when backend is implemented
 export const dummyNotes: Note[] = [
     {
         id: '1',
