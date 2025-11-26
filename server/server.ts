@@ -175,20 +175,23 @@ app.get('/api/notes', verifyFirebaseToken, async (req: Request, res: Response) =
 
     const snapshot = await db.collection('studyNotes')
       .where('userId', '==', userId)
-      .orderBy('dateAdded', 'desc')
       .get();
 
-    const formattedNotes = snapshot.docs.map((doc: any) => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        title: data.title,
-        dateAdded: data.dateAdded?.toDate ? data.dateAdded.toDate().toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-        notes: data.notes,
-        summary: data.summary,
-        questions: data.questions
-      };
-    });
+    const formattedNotes = snapshot.docs
+      .map((doc: any) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          title: data.title,
+          dateAdded: data.dateAdded?.toDate ? data.dateAdded.toDate().toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+          dateAddedTimestamp: data.dateAdded?.toDate ? data.dateAdded.toDate().getTime() : 0,
+          notes: data.notes,
+          summary: data.summary,
+          questions: data.questions
+        };
+      })
+      .sort((a, b) => b.dateAddedTimestamp - a.dateAddedTimestamp)
+      .map(({ dateAddedTimestamp, ...note }) => note);
 
     res.json({
       success: true,
