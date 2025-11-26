@@ -18,16 +18,28 @@ const LoginPage: React.FC = () => {
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        const result = await signInWithEmail(email, password);
-        if (result) {
-            navigate('/home');
+        try {
+            const result = await signInWithEmail(email, password);
+            if (result) {
+                console.log("Email sign-in successful");
+            } else {
+                console.error("Email sign-in failed - no result returned");
+            }
+        } catch (error) {
+            console.error("Email sign-in error:", error);
         }
     };
 
     const handleGoogleLogin = async () => {
-        const result = await signInWithGoogle();
-        if (result) {
-            navigate('/home');
+        try {
+            const result = await signInWithGoogle();
+            if (result) {
+                console.log("Google sign-in successful");
+            } else {
+                console.error("Google sign-in failed - no result returned");
+            }
+        } catch (error) {
+            console.error("Google sign-in error:", error);
         }
     };
 

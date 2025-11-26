@@ -7,11 +7,13 @@ export const signInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
+    console.log("Google sign-in successful, user:", user.uid);
     return { user };
   } catch (err: any) {
     const code = err.code;
     const message = err.message;
-    console.log(`Error ${code}: ${message}`);
+    console.error(`Google sign-in error ${code}: ${message}`);
+    alert(`Sign-in failed: ${message}`);
     return null;
   }
 };

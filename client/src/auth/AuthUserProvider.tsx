@@ -25,9 +25,15 @@ export default function AuthUserProvider({
   useEffect(() => {
     auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth) {
-        await createOrUpdateUser(userAuth);
+        console.log("Auth state changed - user logged in:", userAuth.uid);
+        try {
+          await createOrUpdateUser(userAuth);
+        } catch (error) {
+          console.error("Error creating/updating user:", error);
+        }
         setUser({ user: userAuth});
       } else {
+        console.log("Auth state changed - user logged out");
         setUser({ user: null});
       }
     });
