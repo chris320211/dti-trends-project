@@ -7,6 +7,7 @@ import {
   useEffect,
 } from "react";
 import { auth } from "../firebase";
+import { createOrUpdateUser } from "./userService";
 
 type AuthData = {
   user?: User | null;
@@ -24,6 +25,7 @@ export default function AuthUserProvider({
   useEffect(() => {
     auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth) {
+        await createOrUpdateUser(userAuth);
         setUser({ user: userAuth});
       } else {
         setUser({ user: null});
