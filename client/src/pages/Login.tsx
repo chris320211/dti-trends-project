@@ -1,16 +1,34 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Paper, Container } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
+import { signInWithEmail, signInWithGoogle } from '../auth/auth';
+import { useAuth } from '../auth/AuthUserProvider';
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
-    const [username, setUsername] = useState('');
+    const { user } = useAuth();
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin = (e: React.FormEvent) => {
+    React.useEffect(() => {
+        if (user) {
+            navigate('/home');
+        }
+    }, [user, navigate]);
+
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        /// add auth
-        navigate('/home');
+        const result = await signInWithEmail(email, password);
+        if (result) {
+            navigate('/home');
+        }
+    };
+
+    const handleGoogleLogin = async () => {
+        const result = await signInWithGoogle();
+        if (result) {
+            navigate('/home');
+        }
     };
 
     return (
@@ -40,14 +58,15 @@ const LoginPage: React.FC = () => {
                     <Box component="form" onSubmit={handleLogin} sx={{ width: '100%' }}>
                         <TextField
                             margin="normal"
+                            required
                             fullWidth
-                            id="username"
-                            label="Username"
-                            name="username"
-                            autoComplete="username"
+                            id="email"
+                            label="Email"
+                            name="email"
+                            autoComplete="email"
                             autoFocus
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             sx={{ mb: 2 }}
                         />
                         <TextField
@@ -74,6 +93,19 @@ const LoginPage: React.FC = () => {
                             }}
                         >
                             Sign In
+                        </Button>
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            onClick={handleGoogleLogin}
+                            sx={{
+                                py: 1.5,
+                                fontSize: '1rem',
+                                textTransform: 'none',
+                                mb: 2,
+                            }}
+                        >
+                            Sign in with Google
                         </Button>
                         <Button
                             component={Link}

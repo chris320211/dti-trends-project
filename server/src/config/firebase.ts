@@ -2,7 +2,6 @@ import admin from 'firebase-admin';
 
 export const initializeFirebase = () => {
   try {
-    // need add env
     if (!admin.apps.length) {
       admin.initializeApp({
         credential: admin.credential.cert({

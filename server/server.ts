@@ -2,9 +2,11 @@ import express, { Express, Request, Response } from "express";
 import cors from 'cors';
 import dotenv from 'dotenv';
 import OpenAI from 'openai';
+import { initializeFirebase } from './src/config/firebase';
 
-// Load environment variables
 dotenv.config();
+
+initializeFirebase();
 
 const app: Express = express();
 const port = 1010;

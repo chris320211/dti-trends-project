@@ -1,8 +1,10 @@
 import React from 'react';
 import { Box, Typography, Paper, List, ListItem, ListItemText } from "@mui/material";
+import { useAuth } from '../auth/AuthUserProvider';
 
 const HomePage: React.FC = () => {
-  const username = "Student"; // TODO: Get from auth context/state
+  const { user } = useAuth();
+  const username = user?.displayName || user?.email || "Student";
 
   return (
     <Box sx={{ padding: 4 }}>

@@ -24,7 +24,6 @@ const NoteView: React.FC<NoteViewProps> = ({ note, onBack }) => {
 
     return (
         <Box sx={{ padding: 4, maxWidth: '1000px', margin: '0 auto' }}>
-            {/* Back Button */}
             <Button
                 onClick={() => {
                     onBack();
