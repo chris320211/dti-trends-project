@@ -10,6 +10,7 @@ export interface Note {
     title: string;
     dateAdded: string;
     notes: string;
+    summary: string;
     questions: Question[];
 }
 

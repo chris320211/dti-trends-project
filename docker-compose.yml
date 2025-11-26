@@ -31,6 +31,8 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+    env_file:
+      - .env
     depends_on:
       - server
     restart: unless-stopped
