@@ -2,19 +2,12 @@ import express, { Express, Request, Response } from "express";
 import cors from 'cors';
 import dotenv from 'dotenv';
 import Anthropic from '@anthropic-ai/sdk';
-import mongoose from 'mongoose';
-import { initializeFirebase } from './src/config/firebase';
-import { StudyNote } from './src/models/StudyNote';
-import { verifyToken } from './src/middleware/auth';
+import { initializeFirebase, admin } from './src/config/firebase';
+import { verifyFirebaseToken } from './src/middleware/auth';
 
 dotenv.config();
 
 initializeFirebase();
-
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || '')
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('MongoDB connection error:', err));
 
 const app: Express = express();
 const port = 1010;
@@ -69,7 +62,7 @@ app.post('/api/chat', async (req: Request, res: Response) => {
 });
 
 // Generate Practice Questions from Study Notes
-app.post('/api/notes/generate', verifyToken, async (req: Request, res: Response) => {
+app.post('/api/notes/generate', verifyFirebaseToken, async (req: Request, res: Response) => {
   try {
     const { title, notes, numQuestions } = req.body;
     const userId = (req as any).user.uid;
@@ -138,27 +131,30 @@ Respond ONLY with valid JSON, no additional text.`;
       completed: false
     }));
 
-    // Save to database
-    const studyNote = new StudyNote({
+    // Save to Firestore
+    const db = admin.firestore();
+    const noteData = {
       userId,
       title,
       notes,
       summary: parsedResponse.summary,
       questions: questionsArray,
-      dateAdded: new Date()
-    });
+      dateAdded: admin.firestore.FieldValue.serverTimestamp(),
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    };
 
-    await studyNote.save();
+    const docRef = await db.collection('studyNotes').add(noteData);
 
     res.json({
       success: true,
       note: {
-        id: studyNote._id,
-        title: studyNote.title,
-        dateAdded: studyNote.dateAdded,
-        notes: studyNote.notes,
-        summary: studyNote.summary,
-        questions: studyNote.questions
+        id: docRef.id,
+        title,
+        dateAdded: new Date().toISOString().split('T')[0],
+        notes,
+        summary: parsedResponse.summary,
+        questions: questionsArray
       }
     });
 
@@ -172,22 +168,27 @@ Respond ONLY with valid JSON, no additional text.`;
 });
 
 // Get all study notes for a user
-app.get('/api/notes', verifyToken, async (req: Request, res: Response) => {
+app.get('/api/notes', verifyFirebaseToken, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.uid;
+    const db = admin.firestore();
 
-    const notes = await StudyNote.find({ userId })
-      .sort({ dateAdded: -1 })
-      .select('_id title dateAdded notes summary questions');
+    const snapshot = await db.collection('studyNotes')
+      .where('userId', '==', userId)
+      .orderBy('dateAdded', 'desc')
+      .get();
 
-    const formattedNotes = notes.map(note => ({
-      id: note._id,
-      title: note.title,
-      dateAdded: note.dateAdded.toISOString().split('T')[0],
-      notes: note.notes,
-      summary: note.summary,
-      questions: note.questions
-    }));
+    const formattedNotes = snapshot.docs.map((doc: any) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        title: data.title,
+        dateAdded: data.dateAdded?.toDate ? data.dateAdded.toDate().toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        notes: data.notes,
+        summary: data.summary,
+        questions: data.questions
+      };
+    });
 
     res.json({
       success: true,
@@ -204,25 +205,34 @@ app.get('/api/notes', verifyToken, async (req: Request, res: Response) => {
 });
 
 // Update question completion status
-app.patch('/api/notes/:noteId/questions/:questionId', verifyToken, async (req: Request, res: Response) => {
+app.patch('/api/notes/:noteId/questions/:questionId', verifyFirebaseToken, async (req: Request, res: Response) => {
   try {
     const { noteId, questionId } = req.params;
     const { completed } = req.body;
     const userId = (req as any).user.uid;
+    const db = admin.firestore();
 
-    const note = await StudyNote.findOne({ _id: noteId, userId });
+    const noteRef = db.collection('studyNotes').doc(noteId);
+    const noteDoc = await noteRef.get();
 
-    if (!note) {
+    if (!noteDoc.exists || noteDoc.data()?.userId !== userId) {
       return res.status(404).json({ error: 'Note not found' });
     }
 
-    const question = note.questions.find(q => q.id === questionId);
-    if (!question) {
+    const noteData = noteDoc.data();
+    const questions = noteData?.questions || [];
+
+    const questionIndex = questions.findIndex((q: any) => q.id === questionId);
+    if (questionIndex === -1) {
       return res.status(404).json({ error: 'Question not found' });
     }
 
-    question.completed = completed;
-    await note.save();
+    questions[questionIndex].completed = completed;
+
+    await noteRef.update({
+      questions,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
 
     res.json({
       success: true,
@@ -239,16 +249,20 @@ app.patch('/api/notes/:noteId/questions/:questionId', verifyToken, async (req: R
 });
 
 // Delete a study note
-app.delete('/api/notes/:noteId', verifyToken, async (req: Request, res: Response) => {
+app.delete('/api/notes/:noteId', verifyFirebaseToken, async (req: Request, res: Response) => {
   try {
     const { noteId } = req.params;
     const userId = (req as any).user.uid;
+    const db = admin.firestore();
 
-    const result = await StudyNote.deleteOne({ _id: noteId, userId });
+    const noteRef = db.collection('studyNotes').doc(noteId);
+    const noteDoc = await noteRef.get();
 
-    if (result.deletedCount === 0) {
+    if (!noteDoc.exists || noteDoc.data()?.userId !== userId) {
       return res.status(404).json({ error: 'Note not found' });
     }
+
+    await noteRef.delete();
 
     res.json({
       success: true,

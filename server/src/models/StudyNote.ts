@@ -1,4 +1,6 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose from 'mongoose';
+
+const { Schema, model } = mongoose;
 
 export interface IQuestion {
   id: string;
@@ -6,30 +8,29 @@ export interface IQuestion {
   completed: boolean;
 }
 
-export interface IStudyNote extends Document {
+export interface IStudyNote {
   userId: string;
   title: string;
   notes: string;
   summary: string;
   questions: IQuestion[];
   dateAdded: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-const QuestionSchema = new Schema<IQuestion>({
-  id: { type: String, required: true },
-  question: { type: String, required: true },
-  completed: { type: Boolean, default: false }
-});
-
-const StudyNoteSchema = new Schema<IStudyNote>(
+const StudyNoteSchema = new Schema(
   {
     userId: { type: String, required: true, index: true },
     title: { type: String, required: true },
     notes: { type: String, required: true },
     summary: { type: String, required: true },
-    questions: [QuestionSchema],
+    questions: [{
+      id: String,
+      question: String,
+      completed: { type: Boolean, default: false },
+      _id: false
+    }],
     dateAdded: { type: Date, default: Date.now }
   },
   {
@@ -37,4 +38,4 @@ const StudyNoteSchema = new Schema<IStudyNote>(
   }
 );
 
-export const StudyNote = mongoose.model<IStudyNote>('StudyNote', StudyNoteSchema);
+export const StudyNote = model('StudyNote', StudyNoteSchema);
