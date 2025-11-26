@@ -13,15 +13,14 @@ interface NoteViewProps {
 const NoteView: React.FC<NoteViewProps> = ({ note, onBack }) => {
     const [questions, setQuestions] = useState(note.questions);
     const [showNotes, setShowNotes] = useState(false);
+    const [visibleAnswers, setVisibleAnswers] = useState<Set<string>>(new Set());
 
-    // Handle checkbox change
     const handleToggle = async (questionId: string) => {
         const updatedQuestions = questions.map(q =>
             q.id === questionId ? { ...q, completed: !q.completed } : q
         );
         setQuestions(updatedQuestions);
 
-        // Update backend
         try {
             const user = auth.currentUser;
             if (!user) return;
@@ -44,7 +43,18 @@ const NoteView: React.FC<NoteViewProps> = ({ note, onBack }) => {
         }
     };
 
-    // Calculate progress
+    const toggleAnswer = (questionId: string) => {
+        setVisibleAnswers(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(questionId)) {
+                newSet.delete(questionId);
+            } else {
+                newSet.add(questionId);
+            }
+            return newSet;
+        });
+    };
+
     const completedCount = questions.filter(q => q.completed).length;
     const totalQuestions = questions.length;
 
@@ -60,7 +70,6 @@ const NoteView: React.FC<NoteViewProps> = ({ note, onBack }) => {
                 ← Back to Notes List
             </Button>
 
-            {/* Title and Progress */}
             <Box sx={{ mb: 4 }}>
                 <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
                     {note.title}
@@ -83,7 +92,6 @@ const NoteView: React.FC<NoteViewProps> = ({ note, onBack }) => {
                 </Box>
             </Box>
 
-            {/* Summary */}
             <Paper elevation={3} sx={{ padding: 3, mb: 4, backgroundColor: '#e3f2fd' }}>
                 <Typography variant="h6" gutterBottom sx={{ mb: 2, fontWeight: 'bold' }}>
                     Summary
@@ -93,7 +101,6 @@ const NoteView: React.FC<NoteViewProps> = ({ note, onBack }) => {
                 </Typography>
             </Paper>
 
-            {/* Notes Display */}
             {showNotes && (
                 <Paper elevation={3} sx={{ padding: 3, mb: 4, backgroundColor: '#f5f5f5' }}>
                     <Typography variant="h6" gutterBottom sx={{ mb: 2, fontWeight: 'bold' }}>
@@ -105,33 +112,80 @@ const NoteView: React.FC<NoteViewProps> = ({ note, onBack }) => {
                 </Paper>
             )}
 
-            {/* Questions List */}
             <Paper elevation={3} sx={{ padding: 3 }}>
                 <Typography variant="h6" gutterBottom sx={{ mb: 2, fontWeight: 'bold' }}>
                     Practice Questions
                 </Typography>
                 <List>
                     {questions.map((question) => (
-                        <ListItem key={question.id} sx={{ display: 'flex', alignItems: 'flex-start', py: 2 }}>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={question.completed}
-                                        onChange={() => handleToggle(question.id)}
-                                    />
-                                }
-                                label={
-                                    <Typography 
-                                        sx={{ 
-                                            textDecoration: question.completed ? 'line-through' : 'none',
-                                            color: question.completed ? 'text.secondary' : 'text.primary'
+                        <ListItem
+                            key={question.id}
+                            sx={{
+                                display: 'block',
+                                py: 2,
+                                borderBottom: '1px solid #e0e0e0',
+                                '&:last-child': { borderBottom: 'none' }
+                            }}
+                        >
+                            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={question.completed}
+                                            onChange={() => handleToggle(question.id)}
+                                        />
+                                    }
+                                    label={
+                                        <Typography
+                                            sx={{
+                                                textDecoration: question.completed ? 'line-through' : 'none',
+                                                color: question.completed ? 'text.secondary' : 'text.primary',
+                                                fontSize: '1rem'
+                                            }}
+                                        >
+                                            {question.question}
+                                        </Typography>
+                                    }
+                                    sx={{ flex: 1, mr: 2 }}
+                                />
+                                <Button
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={() => toggleAnswer(question.id)}
+                                    sx={{
+                                        textTransform: 'none',
+                                        minWidth: '120px'
+                                    }}
+                                >
+                                    {visibleAnswers.has(question.id) ? 'Hide Answer' : 'Show Answer'}
+                                </Button>
+                            </Box>
+                            {visibleAnswers.has(question.id) && (
+                                <Box
+                                    sx={{
+                                        mt: 2,
+                                        ml: 5,
+                                        p: 2,
+                                        backgroundColor: '#f0f7ff',
+                                        borderRadius: 1,
+                                        borderLeft: '4px solid #1976d2'
+                                    }}
+                                >
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            fontWeight: 'bold',
+                                            color: '#1976d2',
+                                            mb: 1
                                         }}
                                     >
-                                        {question.question}
+                                        Answer:
                                     </Typography>
-                                }
-                                sx={{ width: '100%' }}
-                            />
+                                    <Typography variant="body2">
+                                        {question.answer}
+                                    </Typography>
+                                </Box>
+                            )}
                         </ListItem>
                     ))}
                 </List>

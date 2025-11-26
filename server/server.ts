@@ -80,7 +80,8 @@ app.post('/api/notes/generate', verifyFirebaseToken, async (req: Request, res: R
 
 Given the following study notes, please:
 1. Generate exactly ${numQuestions} practice questions that test key concepts from the material
-2. Provide a concise summary (2-3 sentences) of the main topics covered
+2. Provide a clear, concise answer for each question
+3. Provide a concise summary (2-3 sentences) of the main topics covered
 
 Study Notes:
 ${notes}
@@ -89,9 +90,14 @@ Please respond in the following JSON format:
 {
   "summary": "Your 2-3 sentence summary here",
   "questions": [
-    "Question 1",
-    "Question 2",
-    ...
+    {
+      "question": "Question 1 here",
+      "answer": "Clear answer to question 1"
+    },
+    {
+      "question": "Question 2 here",
+      "answer": "Clear answer to question 2"
+    }
   ]
 }
 
@@ -100,6 +106,11 @@ Make sure the questions are:
 - Test understanding, not just memorization
 - Cover different aspects of the material
 - Progressively challenging from basic to advanced concepts
+
+Make sure the answers are:
+- Accurate and based on the study notes
+- Concise but complete (1-3 sentences)
+- Educational and help reinforce learning
 
 Respond ONLY with valid JSON, no additional text.`;
 
@@ -124,10 +135,11 @@ Respond ONLY with valid JSON, no additional text.`;
       return res.status(500).json({ error: 'Failed to parse AI response' });
     }
 
-    // Create questions array with IDs and completed status
-    const questionsArray = parsedResponse.questions.map((q: string, index: number) => ({
+    // Create questions array with IDs, answers, and completed status
+    const questionsArray = parsedResponse.questions.map((q: any, index: number) => ({
       id: `${Date.now()}-${index}`,
-      question: q,
+      question: q.question,
+      answer: q.answer,
       completed: false
     }));
 
