@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Box, Typography, Checkbox, FormControlLabel, Button, Paper, List, ListItem } from '@mui/material';
 import { Note } from '../constants/consts';
+import { auth } from '../firebase';
+
+const API_URL = 'http://localhost:1010';
 
 interface NoteViewProps {
     note: Note;
@@ -12,10 +15,33 @@ const NoteView: React.FC<NoteViewProps> = ({ note, onBack }) => {
     const [showNotes, setShowNotes] = useState(false);
 
     // Handle checkbox change
-    const handleToggle = (questionId: string) => {
-        setQuestions(questions.map(q => 
+    const handleToggle = async (questionId: string) => {
+        const updatedQuestions = questions.map(q =>
             q.id === questionId ? { ...q, completed: !q.completed } : q
-        ));
+        );
+        setQuestions(updatedQuestions);
+
+        // Update backend
+        try {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const token = await user.getIdToken();
+            const question = updatedQuestions.find(q => q.id === questionId);
+
+            await fetch(`${API_URL}/api/notes/${note.id}/questions/${questionId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    completed: question?.completed
+                })
+            });
+        } catch (error) {
+            console.error('Failed to update question status:', error);
+        }
     };
 
     // Calculate progress
@@ -57,11 +83,21 @@ const NoteView: React.FC<NoteViewProps> = ({ note, onBack }) => {
                 </Box>
             </Box>
 
+            {/* Summary */}
+            <Paper elevation={3} sx={{ padding: 3, mb: 4, backgroundColor: '#e3f2fd' }}>
+                <Typography variant="h6" gutterBottom sx={{ mb: 2, fontWeight: 'bold' }}>
+                    Summary
+                </Typography>
+                <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+                    {note.summary}
+                </Typography>
+            </Paper>
+
             {/* Notes Display */}
             {showNotes && (
                 <Paper elevation={3} sx={{ padding: 3, mb: 4, backgroundColor: '#f5f5f5' }}>
                     <Typography variant="h6" gutterBottom sx={{ mb: 2, fontWeight: 'bold' }}>
-                        Notes
+                        Original Notes
                     </Typography>
                     <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
                         {note.notes}
