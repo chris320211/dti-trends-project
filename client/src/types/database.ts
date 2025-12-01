@@ -13,3 +13,17 @@ export interface Note {
   questions: Question[];
 }
 
+export interface UserStats {
+  questionsAnsweredToday: number;
+  lifetimeQuestionsAnswered: number;
+  uploadsToday: number;
+  lifetimeUploads: number;
+  currentStreak: number;
+  daysGoalsMet: number;
+  dailyQuestionGoal: number;
+  dailyUploadGoal: number;
+  questionsAnsweredTodayDate?: string | null;
+  lastGoalMetDate?: string | null;
+  uploadsTodayDate?: string | null;
+}
+

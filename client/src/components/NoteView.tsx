@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Checkbox, FormControlLabel, Button, Paper, List, ListItem } from '@mui/material';
+import { Box, Typography, Checkbox, FormControlLabel, Button, Paper, List, ListItem, TextField, Alert } from '@mui/material';
 import { Note } from '../constants/consts';
 import { auth } from '../firebase';
 
@@ -12,8 +12,14 @@ interface NoteViewProps {
 
 const NoteView: React.FC<NoteViewProps> = ({ note, onBack }) => {
     const [questions, setQuestions] = useState(note.questions);
+    const [summary, setSummary] = useState(note.summary);
     const [showNotes, setShowNotes] = useState(false);
     const [visibleAnswers, setVisibleAnswers] = useState<Set<string>>(new Set());
+    const [showReupload, setShowReupload] = useState(false);
+    const [reuploadCount, setReuploadCount] = useState<string>('');
+    const [reuploadLoading, setReuploadLoading] = useState(false);
+    const [reuploadError, setReuploadError] = useState<string>('');
+    const [reuploadSuccess, setReuploadSuccess] = useState<string>('');
 
     const handleToggle = async (questionId: string) => {
         const updatedQuestions = questions.map(q =>
@@ -53,6 +59,56 @@ const NoteView: React.FC<NoteViewProps> = ({ note, onBack }) => {
             }
             return newSet;
         });
+    };
+
+    const handleReupload = async () => {
+        setReuploadError('');
+        setReuploadSuccess('');
+
+        const num = parseInt(reuploadCount, 10);
+        if (Number.isNaN(num) || num < 1 || num > 40) {
+            setReuploadError('Please enter a number between 1 and 40.');
+            return;
+        }
+
+        try {
+            setReuploadLoading(true);
+
+            const user = auth.currentUser;
+            if (!user) {
+                setReuploadError('You must be logged in to reupload notes.');
+                setReuploadLoading(false);
+                return;
+            }
+
+            const token = await user.getIdToken();
+            const response = await fetch(`${API_URL}/api/notes/${note.id}/regenerate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ numQuestions: num })
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to reupload note.');
+            }
+
+            setQuestions(data.note.questions || []);
+            if (data.note.summary) {
+                setSummary(data.note.summary);
+            }
+            setShowReupload(false);
+            setReuploadCount('');
+            setReuploadSuccess('Note reuploaded successfully!');
+        } catch (err: any) {
+            console.error('Failed to reupload note:', err);
+            setReuploadError(err.message || 'Failed to reupload note.');
+        } finally {
+            setReuploadLoading(false);
+        }
     };
 
     const completedCount = questions.filter(q => q.completed).length;
@@ -97,7 +153,7 @@ const NoteView: React.FC<NoteViewProps> = ({ note, onBack }) => {
                     Summary
                 </Typography>
                 <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
-                    {note.summary}
+                    {summary}
                 </Typography>
             </Paper>
 
@@ -190,6 +246,66 @@ const NoteView: React.FC<NoteViewProps> = ({ note, onBack }) => {
                     ))}
                 </List>
             </Paper>
+            <Box sx={{ mt: 4 }}>
+                {!showReupload ? (
+                    <Button
+                        variant="outlined"
+                        onClick={() => setShowReupload(true)}
+                        sx={{ textTransform: 'none' }}
+                    >
+                        Reupload Note
+                    </Button>
+                ) : (
+                    <Paper elevation={2} sx={{ p: 3, mt: 2 }}>
+                        {reuploadSuccess && (
+                            <Alert severity="success" sx={{ mb: 2 }}>
+                                {reuploadSuccess}
+                            </Alert>
+                        )}
+                        {reuploadError && (
+                            <Alert severity="error" sx={{ mb: 2 }}>
+                                {reuploadError}
+                            </Alert>
+                        )}
+                        <Typography variant="h6" sx={{ mb: 2 }}>
+                            Regenerate Questions
+                        </Typography>
+                        <Typography variant="body2" sx={{ mb: 2 }}>
+                            Enter how many questions you want (1–40). This will replace the current questions and summary for this note.
+                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                            <TextField
+                                label="Number of questions"
+                                type="number"
+                                value={reuploadCount}
+                                onChange={(e) => setReuploadCount(e.target.value)}
+                                inputProps={{ min: 1, max: 40 }}
+                                size="small"
+                                sx={{ width: '160px' }}
+                            />
+                            <Button
+                                variant="contained"
+                                onClick={handleReupload}
+                                disabled={reuploadLoading}
+                                sx={{ textTransform: 'none' }}
+                            >
+                                {reuploadLoading ? 'Reuploading...' : 'Reupload'}
+                            </Button>
+                            <Button
+                                variant="text"
+                                onClick={() => {
+                                    setShowReupload(false);
+                                    setReuploadError('');
+                                    setReuploadSuccess('');
+                                }}
+                                sx={{ textTransform: 'none' }}
+                            >
+                                Cancel
+                            </Button>
+                        </Box>
+                    </Paper>
+                )}
+            </Box>
         </Box>
     );
 };
