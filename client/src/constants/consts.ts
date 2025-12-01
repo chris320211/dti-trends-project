@@ -21,6 +21,7 @@ export const dummyNotes: Note[] = [
         title: 'testnote1',
         dateAdded: '2024-01-15',
         notes: 'testnotestext1',
+        summary: 'testsummary1',
         questions: [
             {
                 id: '1-1',
@@ -59,6 +60,7 @@ export const dummyNotes: Note[] = [
         title: 'testnote2',
         dateAdded: '2024-01-20',
         notes: 'testnotestext2',
+        summary: 'testsummary2',
         questions: [
             {
                 id: '2-1',
@@ -97,6 +99,7 @@ export const dummyNotes: Note[] = [
         title: 'testnote3',
         dateAdded: '2024-01-25',
         notes: 'testnotestext3',
+        summary: 'testsummary3',
         questions: [
             {
                 id: '3-1',
