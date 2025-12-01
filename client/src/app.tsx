@@ -8,7 +8,7 @@ import PracticePage from './pages/Practice';
 import Layout from './components/Layout';
 import StatsPage from './pages/Stats';
 import ProtectedRoute from './components/ProtectedRoute';
-import app from './app.css';
+import './app.css';
 
 const App: React.FC = () => {
     return (

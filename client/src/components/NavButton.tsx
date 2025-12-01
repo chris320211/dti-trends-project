@@ -1,7 +1,6 @@
 import React from "react";
 import Button from "@mui/material/Button";
 import { Link as RouterLink, useLocation } from "react-router-dom";
-import { blue } from "@mui/material/colors";
 
 type NavButtonProps = {
   to: string;

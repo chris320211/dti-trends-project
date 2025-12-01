@@ -1,16 +1,15 @@
 import { db } from "../firebase";
-import { 
-  collection, 
-  doc, 
-  setDoc, 
-  getDoc, 
-  getDocs, 
-  query, 
-  where, 
+import {
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+  query,
+  where,
   deleteDoc,
   updateDoc,
   serverTimestamp,
-  Timestamp
 } from "firebase/firestore";
 
 export interface Question {
@@ -74,7 +73,7 @@ export const getUserNotes = async (userId: string): Promise<Note[]> => {
     const questionsQuery = query(collection(db, "questions"), where("noteId", "==", noteDoc.id));
     const questionsSnapshot = await getDocs(questionsQuery);
 
-    const questions: Question[] = questionsSnapshot.docs.map((qDoc, index) => ({
+    const questions: Question[] = questionsSnapshot.docs.map((qDoc) => ({
       id: qDoc.id,
       question: qDoc.data().question,
       completed: qDoc.data().completed || false,

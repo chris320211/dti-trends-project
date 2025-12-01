@@ -1,5 +1,4 @@
 import React from 'react';
-import NavigationBar from '../components/NavigationBar';
 import { Box, Grid } from "@mui/material";
 import UserStats from "../components/UserStats";
 import DailyGoals from "../components/DailyGoalPanel";
