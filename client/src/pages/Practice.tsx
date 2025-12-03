@@ -187,13 +187,7 @@ const PracticePage: React.FC = () => {
                                                 borderColor: isCompleted ? '#4caf50' : 'rgba(0,0,0,0.12)',
                                                 borderRadius: 3,
                                                 p: 3,
-                                                transition: 'all 0.2s ease-in-out',
                                                 background: isCompleted ? 'rgba(76, 175, 80, 0.05)' : 'white',
-                                                '&:hover': {
-                                                    borderColor: '#667eea',
-                                                    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.15)',
-                                                    transform: 'translateY(-2px)',
-                                                }
                                             }}
                                         >
                                             <Stack spacing={2}>
@@ -281,11 +275,6 @@ const PracticePage: React.FC = () => {
                                                             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                                                             fontWeight: 600,
                                                             textTransform: 'none',
-                                                            boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
-                                                            '&:hover': {
-                                                                background: 'linear-gradient(135deg, #5568d3 0%, #65408b 100%)',
-                                                                boxShadow: '0 6px 16px rgba(102, 126, 234, 0.4)',
-                                                            }
                                                         }}
                                                     >
                                                         Start Practice
@@ -302,10 +291,6 @@ const PracticePage: React.FC = () => {
                                                             fontWeight: 600,
                                                             textTransform: 'none',
                                                             minWidth: '120px',
-                                                            '&:hover': {
-                                                                borderColor: '#d32f2f',
-                                                                background: 'rgba(244, 67, 54, 0.08)',
-                                                            }
                                                         }}
                                                     >
                                                         Delete

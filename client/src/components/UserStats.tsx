@@ -54,11 +54,6 @@ const StatCard: React.FC<StatCardProps> = ({ icon, label, value, color, showProg
         borderRadius: 2,
         background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)',
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
-        '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
-        },
       }}
     >
       <Stack direction="row" alignItems="center" spacing={2} mb={showProgress ? 2 : 0}>

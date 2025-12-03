@@ -330,11 +330,6 @@ const UploadPage: React.FC = () => {
                                             p: 4,
                                             textAlign: 'center',
                                             background: pdfFile ? 'rgba(102, 126, 234, 0.05)' : 'transparent',
-                                            transition: 'all 0.2s ease-in-out',
-                                            '&:hover': {
-                                                borderColor: '#667eea',
-                                                background: 'rgba(102, 126, 234, 0.05)',
-                                            },
                                         }}
                                     >
                                         <input
@@ -362,10 +357,6 @@ const UploadPage: React.FC = () => {
                                                         sx={{
                                                             borderColor: '#667eea',
                                                             color: '#667eea',
-                                                            '&:hover': {
-                                                                borderColor: '#5568d3',
-                                                                background: 'rgba(102, 126, 234, 0.08)',
-                                                            },
                                                         }}
                                                     >
                                                         Change File
@@ -386,9 +377,6 @@ const UploadPage: React.FC = () => {
                                                         startIcon={<CloudUpload />}
                                                         sx={{
                                                             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                                            '&:hover': {
-                                                                background: 'linear-gradient(135deg, #5568d3 0%, #65408b 100%)',
-                                                            },
                                                         }}
                                                     >
                                                         Select PDF File
@@ -518,11 +506,6 @@ const UploadPage: React.FC = () => {
                                     fontWeight: 600,
                                     fontSize: '1.1rem',
                                     textTransform: 'none',
-                                    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
-                                    '&:hover': {
-                                        background: 'linear-gradient(135deg, #5568d3 0%, #65408b 100%)',
-                                        boxShadow: '0 6px 16px rgba(102, 126, 234, 0.4)',
-                                    },
                                     '&:disabled': {
                                         background: 'rgba(0,0,0,0.12)',
                                     },
