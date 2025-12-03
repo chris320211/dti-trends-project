@@ -3,13 +3,12 @@ import { Card, CardContent, CircularProgress, Alert, Box, Collapse } from "@mui/
 import DailyGoalDisplay from "./DailyGoalDisplay";
 import DailyGoalEditor from "./DailyGoalEditor";
 import { auth } from "../firebase";
+import { API_ENDPOINTS } from "../config/api";
 
 export type Goals = {
   uploadsPerDay: number;
   questionsPerDay: number;
 };
-
-const API_URL = "http://localhost:1010";
 const defaultGoals: Goals = {
   uploadsPerDay: 2,
   questionsPerDay: 5,
@@ -35,7 +34,7 @@ const DailyGoalPanel: React.FC = () => {
       }
 
       const token = await user.getIdToken();
-      const response = await fetch(`${API_URL}/api/user/goals`, {
+      const response = await fetch(API_ENDPOINTS.userGoals, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -82,7 +81,7 @@ const DailyGoalPanel: React.FC = () => {
       }
 
       const token = await user.getIdToken();
-      const response = await fetch(`${API_URL}/api/user/goals`, {
+      const response = await fetch(API_ENDPOINTS.userGoals, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

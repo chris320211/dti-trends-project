@@ -24,8 +24,7 @@ import {
 import { Note } from '../constants/consts';
 import NoteView from '../components/NoteView';
 import { auth } from '../firebase';
-
-const API_URL = 'http://localhost:1010';
+import { API_URL } from '../config/api';
 
 const PracticePage: React.FC = () => {
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);

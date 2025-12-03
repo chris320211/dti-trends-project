@@ -28,7 +28,24 @@ const upload = multer({
   },
 });
 
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:2020',
+  'http://localhost:5173',
+  process.env.FRONTEND_URL || 'https://your-vercel-app.vercel.app'
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.some(allowedOrigin => origin.startsWith(allowedOrigin as string))) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 app.use(express.json());
 
 app.get('/', (req, res) => {
