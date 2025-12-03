@@ -38,6 +38,10 @@ app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
 
+    if (origin.includes('.vercel.app')) {
+      return callback(null, true);
+    }
+
     if (allowedOrigins.some(allowedOrigin => origin.startsWith(allowedOrigin as string))) {
       callback(null, true);
     } else {
