@@ -12,7 +12,6 @@ const PracticePage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    // Fetch notes from backend
     useEffect(() => {
         fetchNotes();
     }, []);
@@ -52,13 +51,11 @@ const PracticePage: React.FC = () => {
         }
     };
 
-    // Function to handle going back to the notes list
     const handleBackToList = () => {
         setSelectedNote(null);
         fetchNotes(); // Refresh notes when going back
     };
 
-    // Function to handle deleting a note
     const handleDeleteNote = async (noteId: string) => {
         if (!window.confirm('Are you sure you want to delete this note?')) {
             return;
@@ -81,7 +78,6 @@ const PracticePage: React.FC = () => {
                 throw new Error('Failed to delete note');
             }
 
-            // Refresh notes list
             fetchNotes();
         } catch (err: any) {
             console.error('Error deleting note:', err);
@@ -89,12 +85,10 @@ const PracticePage: React.FC = () => {
         }
     };
 
-    // If a note is selected, show the NoteView component
     if (selectedNote) {
         return <NoteView note={selectedNote} onBack={handleBackToList} />;
     }
 
-    // calculuate progress for each note
     const getProgress = (note: Note) => {
         const completed = note.questions.filter(q => q.completed).length;
         return `${completed}/${note.questions.length}`;

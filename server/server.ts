@@ -2,8 +2,10 @@ import express, { Express, Request, Response } from "express";
 import cors from 'cors';
 import dotenv from 'dotenv';
 import Anthropic from '@anthropic-ai/sdk';
+import multer from 'multer';
 import { initializeFirebase, admin } from './src/config/firebase';
 import { verifyFirebaseToken } from './src/middleware/auth';
+import { PDFParse } from 'pdf-parse';
 
 dotenv.config();
 
@@ -11,6 +13,20 @@ initializeFirebase();
 
 const app: Express = express();
 const port = 1010;
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF files are allowed'));
+    }
+  },
+});
 
 app.use(cors());
 app.use(express.json());
@@ -23,7 +39,6 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-// Anthropic Claude
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
@@ -129,7 +144,6 @@ const maybeRecordDailyGoalMet = async (
   );
 };
 
-// Claude API Endpoint
 app.post('/api/chat', async (req: Request, res: Response) => {
   try {
     const { message, model = 'claude-3-5-haiku-20241022' } = req.body;
@@ -162,7 +176,6 @@ app.post('/api/chat', async (req: Request, res: Response) => {
   }
 });
 
-// Generate Practice Questions from Study Notes
 app.post('/api/notes/generate', verifyFirebaseToken, async (req: Request, res: Response) => {
   try {
     const { title, notes, numQuestions } = req.body;
@@ -176,12 +189,11 @@ app.post('/api/notes/generate', verifyFirebaseToken, async (req: Request, res: R
       return res.status(400).json({ error: 'Number of questions must be between 1 and 40' });
     }
 
-    // Create a comprehensive prompt for Claude to generate questions and summary
-    const prompt = `You are an expert educational assistant helping students study effectively.
+    const prompt = `You are an expert educational assistant specializing in creating challenging, thought-provoking practice questions.
 
 Given the following study notes, please:
-1. Generate exactly ${numQuestions} practice questions that test key concepts from the material
-2. Provide a clear, concise answer for each question
+1. Generate exactly ${numQuestions} practice questions that test deep understanding and critical thinking
+2. Provide comprehensive, detailed answers for each question
 3. Provide a concise summary (2-3 sentences) of the main topics covered
 
 Study Notes:
@@ -193,29 +205,33 @@ Please respond in the following JSON format:
   "questions": [
     {
       "question": "Question 1 here",
-      "answer": "Clear answer to question 1"
+      "answer": "Comprehensive answer to question 1"
     },
     {
       "question": "Question 2 here",
-      "answer": "Clear answer to question 2"
+      "answer": "Comprehensive answer to question 2"
     }
   ]
 }
 
-Make sure the questions are:
-- Clear and specific
-- Test understanding, not just memorization
-- Cover different aspects of the material
-- Progressively challenging from basic to advanced concepts
+IMPORTANT - Make the questions MORE COMPLEX and CHALLENGING:
+- Focus on application, analysis, synthesis, and evaluation (higher-order thinking)
+- Include scenario-based questions that require applying concepts to new situations
+- Ask "why" and "how" questions, not just "what" questions
+- Create questions that connect multiple concepts together
+- Include questions that require critical thinking and problem-solving
+- Mix question types: conceptual understanding, practical application, compare/contrast, cause/effect
+- Progressively increase difficulty from foundational to advanced concepts
+- For technical content, include questions about edge cases, limitations, and trade-offs
 
-Make sure the answers are:
-- Accurate and based on the study notes
-- Concise but complete (1-3 sentences)
-- Educational and help reinforce learning
+Make the answers:
+- Thorough and educational (2-4 sentences)
+- Include reasoning and explanations, not just facts
+- Reference specific concepts from the material
+- Help students understand the "why" behind the answer
 
 Respond ONLY with valid JSON, no additional text.`;
 
-    // Call Claude API
     const response = await anthropic.messages.create({
       model: 'claude-3-5-haiku-20241022',
       max_tokens: 2000,
@@ -227,7 +243,6 @@ Respond ONLY with valid JSON, no additional text.`;
 
     const responseText = response.content[0].type === 'text' ? response.content[0].text : '';
 
-    // Parse the JSON response
     let parsedResponse;
     try {
       parsedResponse = JSON.parse(responseText);
@@ -236,7 +251,6 @@ Respond ONLY with valid JSON, no additional text.`;
       return res.status(500).json({ error: 'Failed to parse AI response' });
     }
 
-    // Create questions array with IDs, answers, and completed status
     const questionsArray = parsedResponse.questions.map((q: any, index: number) => ({
       id: `${Date.now()}-${index}`,
       question: q.question,
@@ -244,7 +258,6 @@ Respond ONLY with valid JSON, no additional text.`;
       completed: false
     }));
 
-    // Save to Firestore
     const db = admin.firestore();
     const noteData = {
       userId,
@@ -259,7 +272,6 @@ Respond ONLY with valid JSON, no additional text.`;
 
     const docRef = await db.collection('studyNotes').add(noteData);
 
-    // Update user's upload counters
     const userRef = db.collection('users').doc(userId);
     const userDoc = await ensureUserDocument(userRef, userId);
     const userData = userDoc.data() || {};
@@ -308,7 +320,171 @@ Respond ONLY with valid JSON, no additional text.`;
   }
 });
 
-// Regenerate questions for an existing note
+app.post('/api/notes/generate-from-pdf', verifyFirebaseToken, upload.single('pdf'), async (req: Request, res: Response) => {
+  try {
+    const { title, numQuestions } = req.body;
+    const userId = (req as any).user.uid;
+
+    if (!title || !numQuestions) {
+      return res.status(400).json({ error: 'Title and numQuestions are required' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'PDF file is required' });
+    }
+
+    const questionCount = parseInt(numQuestions);
+    if (questionCount < 1 || questionCount > 40) {
+      return res.status(400).json({ error: 'Number of questions must be between 1 and 40' });
+    }
+
+    let pdfText: string;
+    try {
+      const parser = new PDFParse({ data: req.file.buffer });
+      const result = await parser.getText();
+      pdfText = result.text;
+
+      if (!pdfText || pdfText.trim().length === 0) {
+        return res.status(400).json({ error: 'Could not extract text from PDF. Please ensure the PDF contains readable text.' });
+      }
+    } catch (pdfError) {
+      console.error('PDF parsing error:', pdfError);
+      return res.status(400).json({ error: 'Failed to parse PDF file. Please ensure it is a valid PDF.' });
+    }
+
+    const prompt = `You are an expert educational assistant specializing in creating challenging, thought-provoking practice questions.
+
+Given the following study material extracted from a PDF document, please:
+1. Generate exactly ${questionCount} practice questions that test deep understanding and critical thinking
+2. Provide comprehensive, detailed answers for each question
+3. Provide a concise summary (2-3 sentences) of the main topics covered
+
+Study Material:
+${pdfText}
+
+Please respond in the following JSON format:
+{
+  "summary": "Your 2-3 sentence summary here",
+  "questions": [
+    {
+      "question": "Question 1 here",
+      "answer": "Comprehensive answer to question 1"
+    },
+    {
+      "question": "Question 2 here",
+      "answer": "Comprehensive answer to question 2"
+    }
+  ]
+}
+
+IMPORTANT - Make the questions MORE COMPLEX and CHALLENGING:
+- Focus on application, analysis, synthesis, and evaluation (higher-order thinking)
+- Include scenario-based questions that require applying concepts to new situations
+- Ask "why" and "how" questions, not just "what" questions
+- Create questions that connect multiple concepts together
+- Include questions that require critical thinking and problem-solving
+- Mix question types: conceptual understanding, practical application, compare/contrast, cause/effect
+- Progressively increase difficulty from foundational to advanced concepts
+- For technical content, include questions about edge cases, limitations, and trade-offs
+
+Make the answers:
+- Thorough and educational (2-4 sentences)
+- Include reasoning and explanations, not just facts
+- Reference specific concepts from the material
+- Help students understand the "why" behind the answer
+
+Respond ONLY with valid JSON, no additional text.`;
+
+    const response = await anthropic.messages.create({
+      model: 'claude-3-5-haiku-20241022',
+      max_tokens: 4000,
+      temperature: 0.7,
+      messages: [
+        { role: 'user', content: prompt }
+      ],
+    });
+
+    const responseText = response.content[0].type === 'text' ? response.content[0].text : '';
+
+    let parsedResponse;
+    try {
+      parsedResponse = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error('Failed to parse Claude response:', responseText);
+      return res.status(500).json({ error: 'Failed to parse AI response' });
+    }
+
+    const questionsArray = parsedResponse.questions.map((q: any, index: number) => ({
+      id: `${Date.now()}-${index}`,
+      question: q.question,
+      answer: q.answer,
+      completed: false
+    }));
+
+    const db = admin.firestore();
+    const noteData = {
+      userId,
+      title,
+      notes: pdfText.substring(0, 5000), // Store first 5000 chars of PDF text
+      summary: parsedResponse.summary,
+      questions: questionsArray,
+      sourceType: 'pdf',
+      originalFileName: req.file.originalname,
+      dateAdded: admin.firestore.FieldValue.serverTimestamp(),
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    };
+
+    const docRef = await db.collection('studyNotes').add(noteData);
+
+    const userRef = db.collection('users').doc(userId);
+    const userDoc = await ensureUserDocument(userRef, userId);
+    const userData = userDoc.data() || {};
+    const existingUploadDate = userData.uploadsTodayDate?.toDate
+      ? userData.uploadsTodayDate.toDate()
+      : null;
+    const today = new Date();
+    const sameUploadDay =
+      existingUploadDate &&
+      existingUploadDate.getUTCFullYear() === today.getUTCFullYear() &&
+      existingUploadDate.getUTCMonth() === today.getUTCMonth() &&
+      existingUploadDate.getUTCDate() === today.getUTCDate();
+
+    const uploadsToday = sameUploadDay ? userData.uploadsToday || 0 : 0;
+
+    await userRef.set(
+      {
+        uploadsToday: uploadsToday + 1,
+        uploadsTodayDate: admin.firestore.FieldValue.serverTimestamp(),
+        lifetimeUploads: (userData.lifetimeUploads || 0) + 1,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+
+    await maybeRecordDailyGoalMet(userRef);
+
+    res.json({
+      success: true,
+      note: {
+        id: docRef.id,
+        title,
+        dateAdded: new Date().toISOString().split('T')[0],
+        summary: parsedResponse.summary,
+        questions: questionsArray,
+        sourceType: 'pdf'
+      }
+    });
+
+  } catch (error: any) {
+    console.error('Error generating questions from PDF:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to process PDF and generate questions'
+    });
+  }
+});
+
 app.post('/api/notes/:noteId/regenerate', verifyFirebaseToken, async (req: Request, res: Response) => {
   try {
     const { noteId } = req.params;
@@ -461,7 +637,6 @@ Respond ONLY with valid JSON, no additional text.`;
   }
 });
 
-// Get all study notes for a user
 app.get('/api/notes', verifyFirebaseToken, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.uid;
@@ -501,7 +676,6 @@ app.get('/api/notes', verifyFirebaseToken, async (req: Request, res: Response) =
   }
 });
 
-// Update question completion status
 app.patch('/api/notes/:noteId/questions/:questionId', verifyFirebaseToken, async (req: Request, res: Response) => {
   try {
     const { noteId, questionId } = req.params;
@@ -576,7 +750,6 @@ app.patch('/api/notes/:noteId/questions/:questionId', verifyFirebaseToken, async
   }
 });
 
-// Delete a study note
 app.delete('/api/notes/:noteId', verifyFirebaseToken, async (req: Request, res: Response) => {
   try {
     const { noteId } = req.params;
@@ -606,7 +779,6 @@ app.delete('/api/notes/:noteId', verifyFirebaseToken, async (req: Request, res: 
   }
 });
 
-// Fetch user stats
 app.get('/api/user/stats', verifyFirebaseToken, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.uid;
@@ -725,7 +897,6 @@ const defaultGoals = {
   dailyUploadGoal: 2,
 };
 
-// Get daily goals
 app.get('/api/user/goals', verifyFirebaseToken, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.uid;
@@ -790,7 +961,6 @@ app.get('/api/user/goals', verifyFirebaseToken, async (req: Request, res: Respon
   }
 });
 
-// Update daily goals
 app.put('/api/user/goals', verifyFirebaseToken, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.uid;

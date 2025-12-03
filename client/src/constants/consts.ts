@@ -1,4 +1,3 @@
-// Types for notes and questions
 export interface Question {
     id: string;
     question: string;

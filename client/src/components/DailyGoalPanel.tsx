@@ -106,7 +106,6 @@ const DailyGoalPanel: React.FC = () => {
       setSuccess("Goals updated!");
       setIsEditing(false);
 
-      // Ask UserStats (and any listeners) to refetch data
       window.dispatchEvent(new Event("userstats:refresh"));
     } catch (err: any) {
       console.error("Failed to save goals:", err);
