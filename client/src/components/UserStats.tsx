@@ -3,12 +3,20 @@ import {
   Card,
   CardContent,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
   CircularProgress,
   Alert,
+  Box,
+  Stack,
+  LinearProgress,
+  Chip,
 } from "@mui/material";
+import {
+  TrendingUp,
+  School,
+  CloudUpload,
+  LocalFireDepartment,
+  EmojiEvents,
+} from "@mui/icons-material";
 import { auth } from "../firebase";
 import { UserStats as UserStatsType } from "../types/database";
 
@@ -26,6 +34,85 @@ const defaultStats: UserStatsType = {
   questionsAnsweredTodayDate: null,
   lastGoalMetDate: null,
   uploadsTodayDate: null,
+};
+
+interface StatCardProps {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+  color: string;
+  showProgress?: boolean;
+  goal?: number;
+}
+
+const StatCard: React.FC<StatCardProps> = ({ icon, label, value, color, showProgress, goal }) => {
+  const progress = goal ? Math.min((value / goal) * 100, 100) : 0;
+
+  return (
+    <Box
+      sx={{
+        p: 3,
+        borderRadius: 2,
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+        transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+        },
+      }}
+    >
+      <Stack direction="row" alignItems="center" spacing={2} mb={showProgress ? 2 : 0}>
+        <Box
+          sx={{
+            width: 48,
+            height: 48,
+            borderRadius: '12px',
+            background: color,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+          }}
+        >
+          {icon}
+        </Box>
+        <Box sx={{ flex: 1 }}>
+          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+            {label}
+          </Typography>
+          <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary' }}>
+            {value}
+          </Typography>
+        </Box>
+      </Stack>
+      {showProgress && goal && (
+        <Box>
+          <Stack direction="row" justifyContent="space-between" mb={0.5}>
+            <Typography variant="caption" color="text.secondary">
+              Progress
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+              {value}/{goal}
+            </Typography>
+          </Stack>
+          <LinearProgress
+            variant="determinate"
+            value={progress}
+            sx={{
+              height: 8,
+              borderRadius: 4,
+              backgroundColor: 'rgba(0,0,0,0.08)',
+              '& .MuiLinearProgress-bar': {
+                borderRadius: 4,
+                background: color,
+              },
+            }}
+          />
+        </Box>
+      )}
+    </Box>
+  );
 };
 
 const UserStats = () => {
@@ -81,55 +168,85 @@ const UserStats = () => {
   }, []);
 
   return (
-    <Card sx={{ minWidth: 320 }}>
-      <CardContent>
-        <Typography variant="h4" gutterBottom>
-          User Stats
-        </Typography>
+    <Card
+      sx={{
+        borderRadius: 3,
+        boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+        background: 'rgba(255,255,255,0.98)',
+      }}
+    >
+      <CardContent sx={{ p: 4 }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
+          <Typography variant="h5" sx={{ fontWeight: 700, color: 'text.primary' }}>
+            Your Statistics
+          </Typography>
+          {stats.currentStreak > 0 && !loading && !error && (
+            <Chip
+              icon={<LocalFireDepartment />}
+              label={`${stats.currentStreak} day streak!`}
+              color="warning"
+              sx={{ fontWeight: 600 }}
+            />
+          )}
+        </Stack>
 
         {loading ? (
-          <CircularProgress />
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+            <CircularProgress size={48} />
+          </Box>
         ) : error ? (
           <Alert severity="error">{error}</Alert>
         ) : (
-          <List>
-            <ListItem>
-              <ListItemText
-                primary="# questions answered today"
-                secondary={stats.questionsAnsweredToday}
+          <Stack spacing={2.5}>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2.5 }}>
+              <StatCard
+                icon={<School />}
+                label="Questions Today"
+                value={stats.questionsAnsweredToday}
+                color="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                showProgress
+                goal={stats.dailyQuestionGoal}
               />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary="# lifetime answered questions"
-                secondary={stats.lifetimeQuestionsAnswered}
+              <StatCard
+                icon={<CloudUpload />}
+                label="Uploads Today"
+                value={stats.uploadsToday}
+                color="linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
+                showProgress
+                goal={stats.dailyUploadGoal}
               />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary="# uploads today"
-                secondary={stats.uploadsToday}
+            </Box>
+
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2.5 }}>
+              <StatCard
+                icon={<TrendingUp />}
+                label="Total Questions"
+                value={stats.lifetimeQuestionsAnswered}
+                color="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"
               />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary="# lifetime uploads"
-                secondary={stats.lifetimeUploads}
+              <StatCard
+                icon={<CloudUpload />}
+                label="Total Uploads"
+                value={stats.lifetimeUploads}
+                color="linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)"
               />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary="# day streak"
-                secondary={stats.currentStreak}
+            </Box>
+
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2.5 }}>
+              <StatCard
+                icon={<LocalFireDepartment />}
+                label="Current Streak"
+                value={stats.currentStreak}
+                color="linear-gradient(135deg, #fa709a 0%, #fee140 100%)"
               />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary="# days where goals met"
-                secondary={stats.daysGoalsMet}
+              <StatCard
+                icon={<EmojiEvents />}
+                label="Goals Achieved"
+                value={stats.daysGoalsMet}
+                color="linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)"
               />
-            </ListItem>
-          </List>
+            </Box>
+          </Stack>
         )}
       </CardContent>
     </Card>
