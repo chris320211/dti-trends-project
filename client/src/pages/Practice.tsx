@@ -1,5 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Paper, Button, List, ListItem, CircularProgress, Alert } from '@mui/material';
+import {
+    Box,
+    Typography,
+    Paper,
+    Button,
+    CircularProgress,
+    Alert,
+    Container,
+    Card,
+    CardContent,
+    Stack,
+    Chip,
+    LinearProgress,
+} from '@mui/material';
+import {
+    School,
+    PlayArrow,
+    Delete,
+    CheckCircle,
+    InsertDriveFile,
+    PictureAsPdf,
+} from '@mui/icons-material';
 import { Note } from '../constants/consts';
 import NoteView from '../components/NoteView';
 import { auth } from '../firebase';
@@ -91,76 +112,215 @@ const PracticePage: React.FC = () => {
 
     const getProgress = (note: Note) => {
         const completed = note.questions.filter(q => q.completed).length;
-        return `${completed}/${note.questions.length}`;
+        const total = note.questions.length;
+        return { completed, total, percentage: (completed / total) * 100 };
     };
 
     return (
-        <Box sx={{ padding: 4, maxWidth: '1000px', margin: '0 auto' }}>
-            <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
-                Practice
-            </Typography>
-
-            {error && (
-                <Alert severity="error" sx={{ mb: 3 }}>
-                    {error}
-                </Alert>
-            )}
-
-            {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
-                    <CircularProgress />
-                </Box>
-            ) : notes.length === 0 ? (
-                <Typography variant="body1" color="text.secondary">
-                    No notes uploaded yet. Go to Upload to add your first notes!
+        <Box sx={{
+            minHeight: '100vh',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            py: 6,
+        }}>
+            <Container maxWidth="lg">
+                <Typography
+                    variant="h3"
+                    sx={{
+                        color: 'white',
+                        fontWeight: 700,
+                        mb: 1,
+                        textAlign: 'center',
+                        textShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                    }}
+                >
+                    <School sx={{ fontSize: 48, verticalAlign: 'middle', mr: 2 }} />
+                    Practice Questions
                 </Typography>
-            ) : (
-                <List>
-                    {notes.map((note) => (
-                        <ListItem key={note.id} sx={{ mb: 2, p: 0 }}>
-                            <Paper
-                                elevation={2}
-                                sx={{
-                                    width: '100%',
-                                    padding: 3,
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center'
-                                }}
-                            >
-                                <Box sx={{ flex: 1 }}>
-                                    <Typography variant="h6" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                                        {note.title}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                        Date added: {note.dateAdded}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Progress: {getProgress(note)} questions
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: 'flex', gap: 2 }}>
-                                    <Button
-                                        variant="contained"
-                                        onClick={() => setSelectedNote(note)}
-                                        sx={{ textTransform: 'none' }}
-                                    >
-                                        Go
-                                    </Button>
-                                    <Button
-                                        variant="outlined"
-                                        color="error"
-                                        onClick={() => handleDeleteNote(note.id)}
-                                        sx={{ textTransform: 'none' }}
-                                    >
-                                        Delete
-                                    </Button>
-                                </Box>
-                            </Paper>
-                        </ListItem>
-                    ))}
-                </List>
-            )}
+                <Typography
+                    variant="body1"
+                    sx={{
+                        color: 'rgba(255,255,255,0.9)',
+                        mb: 4,
+                        textAlign: 'center'
+                    }}
+                >
+                    Review your study materials and test your knowledge
+                </Typography>
+
+                {error && (
+                    <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
+                        {error}
+                    </Alert>
+                )}
+
+                <Card sx={{
+                    borderRadius: 3,
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+                    background: 'rgba(255,255,255,0.98)',
+                }}>
+                    <CardContent sx={{ p: 4 }}>
+                        {loading ? (
+                            <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+                                <CircularProgress sx={{ color: '#667eea' }} size={60} />
+                            </Box>
+                        ) : notes.length === 0 ? (
+                            <Box sx={{ textAlign: 'center', py: 8 }}>
+                                <School sx={{ fontSize: 80, color: 'rgba(0,0,0,0.2)', mb: 2 }} />
+                                <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
+                                    No study materials yet
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    Go to Upload to add your first notes and generate practice questions!
+                                </Typography>
+                            </Box>
+                        ) : (
+                            <Stack spacing={3}>
+                                {notes.map((note) => {
+                                    const progress = getProgress(note);
+                                    const isCompleted = progress.completed === progress.total;
+
+                                    return (
+                                        <Paper
+                                            key={note.id}
+                                            elevation={0}
+                                            sx={{
+                                                border: '2px solid',
+                                                borderColor: isCompleted ? '#4caf50' : 'rgba(0,0,0,0.12)',
+                                                borderRadius: 3,
+                                                p: 3,
+                                                transition: 'all 0.2s ease-in-out',
+                                                background: isCompleted ? 'rgba(76, 175, 80, 0.05)' : 'white',
+                                                '&:hover': {
+                                                    borderColor: '#667eea',
+                                                    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.15)',
+                                                    transform: 'translateY(-2px)',
+                                                }
+                                            }}
+                                        >
+                                            <Stack spacing={2}>
+                                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                                    <Box sx={{ flex: 1 }}>
+                                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                                                            {(note as any).sourceType === 'pdf' ? (
+                                                                <PictureAsPdf sx={{ color: '#667eea', fontSize: 28 }} />
+                                                            ) : (
+                                                                <InsertDriveFile sx={{ color: '#667eea', fontSize: 28 }} />
+                                                            )}
+                                                            <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                                                                {note.title}
+                                                            </Typography>
+                                                            {isCompleted && (
+                                                                <CheckCircle sx={{ color: '#4caf50', fontSize: 24 }} />
+                                                            )}
+                                                        </Box>
+                                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                                            Added on {note.dateAdded}
+                                                        </Typography>
+                                                    </Box>
+                                                    <Chip
+                                                        label={`${progress.completed}/${progress.total}`}
+                                                        sx={{
+                                                            background: isCompleted
+                                                                ? 'linear-gradient(135deg, #4caf50 0%, #45a049 100%)'
+                                                                : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                                            color: 'white',
+                                                            fontWeight: 600,
+                                                            fontSize: '0.9rem',
+                                                            px: 1,
+                                                        }}
+                                                    />
+                                                </Box>
+
+                                                <Box>
+                                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                                                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                                                            Progress
+                                                        </Typography>
+                                                        <Typography variant="body2" color="text.secondary">
+                                                            {Math.round(progress.percentage)}%
+                                                        </Typography>
+                                                    </Box>
+                                                    <LinearProgress
+                                                        variant="determinate"
+                                                        value={progress.percentage}
+                                                        sx={{
+                                                            height: 8,
+                                                            borderRadius: 4,
+                                                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                                                            '& .MuiLinearProgress-bar': {
+                                                                borderRadius: 4,
+                                                                background: isCompleted
+                                                                    ? 'linear-gradient(90deg, #4caf50 0%, #45a049 100%)'
+                                                                    : 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)',
+                                                            }
+                                                        }}
+                                                    />
+                                                </Box>
+
+                                                {note.summary && (
+                                                    <Typography variant="body2" color="text.secondary" sx={{
+                                                        fontStyle: 'italic',
+                                                        borderLeft: '3px solid #667eea',
+                                                        pl: 2,
+                                                        py: 1,
+                                                        background: 'rgba(102, 126, 234, 0.05)',
+                                                        borderRadius: 1,
+                                                    }}>
+                                                        {note.summary}
+                                                    </Typography>
+                                                )}
+
+                                                <Box sx={{ display: 'flex', gap: 2, pt: 1 }}>
+                                                    <Button
+                                                        variant="contained"
+                                                        startIcon={<PlayArrow />}
+                                                        onClick={() => setSelectedNote(note)}
+                                                        fullWidth
+                                                        sx={{
+                                                            py: 1.5,
+                                                            borderRadius: 2,
+                                                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                                            fontWeight: 600,
+                                                            textTransform: 'none',
+                                                            boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
+                                                            '&:hover': {
+                                                                background: 'linear-gradient(135deg, #5568d3 0%, #65408b 100%)',
+                                                                boxShadow: '0 6px 16px rgba(102, 126, 234, 0.4)',
+                                                            }
+                                                        }}
+                                                    >
+                                                        Start Practice
+                                                    </Button>
+                                                    <Button
+                                                        variant="outlined"
+                                                        startIcon={<Delete />}
+                                                        onClick={() => handleDeleteNote(note.id)}
+                                                        sx={{
+                                                            py: 1.5,
+                                                            borderRadius: 2,
+                                                            borderColor: '#f44336',
+                                                            color: '#f44336',
+                                                            fontWeight: 600,
+                                                            textTransform: 'none',
+                                                            minWidth: '120px',
+                                                            '&:hover': {
+                                                                borderColor: '#d32f2f',
+                                                                background: 'rgba(244, 67, 54, 0.08)',
+                                                            }
+                                                        }}
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                </Box>
+                                            </Stack>
+                                        </Paper>
+                                    );
+                                })}
+                            </Stack>
+                        )}
+                    </CardContent>
+                </Card>
+            </Container>
         </Box>
     );
 };
