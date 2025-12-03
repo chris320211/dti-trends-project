@@ -19,8 +19,7 @@ import {
 } from "@mui/icons-material";
 import { auth } from "../firebase";
 import { UserStats as UserStatsType } from "../types/database";
-
-const API_URL = "http://localhost:1010";
+import { API_URL } from "../config/api";
 
 const defaultStats: UserStatsType = {
   questionsAnsweredToday: 0,

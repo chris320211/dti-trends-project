@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, Checkbox, FormControlLabel, Button, Paper, List, ListItem, TextField, Alert } from '@mui/material';
 import { Note } from '../constants/consts';
 import { auth } from '../firebase';
-
-const API_URL = 'http://localhost:1010';
+import { API_URL } from '../config/api';
 
 interface NoteViewProps {
     note: Note;

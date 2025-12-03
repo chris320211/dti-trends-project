@@ -29,8 +29,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
-
-const API_URL = 'http://localhost:1010';
+import { API_URL } from '../config/api';
 
 const UploadPage: React.FC = () => {
     const [uploadMode, setUploadMode] = useState<'text' | 'pdf'>('text');
