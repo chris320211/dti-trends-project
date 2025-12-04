@@ -118,7 +118,7 @@ const PracticePage: React.FC = () => {
     return (
         <Box sx={{
             minHeight: '100vh',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: '#1976d2',
             py: 6,
         }}>
             <Container maxWidth="lg">
@@ -154,13 +154,12 @@ const PracticePage: React.FC = () => {
 
                 <Card sx={{
                     borderRadius: 3,
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
                     background: 'rgba(255,255,255,0.98)',
                 }}>
                     <CardContent sx={{ p: 4 }}>
                         {loading ? (
                             <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
-                                <CircularProgress sx={{ color: '#667eea' }} size={60} />
+                                <CircularProgress sx={{ color: '#1976d2' }} size={60} />
                             </Box>
                         ) : notes.length === 0 ? (
                             <Box sx={{ textAlign: 'center', py: 8 }}>
@@ -195,9 +194,9 @@ const PracticePage: React.FC = () => {
                                                     <Box sx={{ flex: 1 }}>
                                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                                                             {(note as any).sourceType === 'pdf' ? (
-                                                                <PictureAsPdf sx={{ color: '#667eea', fontSize: 28 }} />
+                                                                <PictureAsPdf sx={{ color: '#1976d2', fontSize: 28 }} />
                                                             ) : (
-                                                                <InsertDriveFile sx={{ color: '#667eea', fontSize: 28 }} />
+                                                                <InsertDriveFile sx={{ color: '#1976d2', fontSize: 28 }} />
                                                             )}
                                                             <Typography variant="h5" sx={{ fontWeight: 600 }}>
                                                                 {note.title}
@@ -214,8 +213,8 @@ const PracticePage: React.FC = () => {
                                                         label={`${progress.completed}/${progress.total}`}
                                                         sx={{
                                                             background: isCompleted
-                                                                ? 'linear-gradient(135deg, #4caf50 0%, #45a049 100%)'
-                                                                : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                                                ? '#1976d2'
+                                                                : '#1976d2',
                                                             color: 'white',
                                                             fontWeight: 600,
                                                             fontSize: '0.9rem',
@@ -243,8 +242,8 @@ const PracticePage: React.FC = () => {
                                                             '& .MuiLinearProgress-bar': {
                                                                 borderRadius: 4,
                                                                 background: isCompleted
-                                                                    ? 'linear-gradient(90deg, #4caf50 0%, #45a049 100%)'
-                                                                    : 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)',
+                                                                    ? '#1976d2'
+                                                                    : '#1976d2',
                                                             }
                                                         }}
                                                     />
@@ -253,7 +252,7 @@ const PracticePage: React.FC = () => {
                                                 {note.summary && (
                                                     <Typography variant="body2" color="text.secondary" sx={{
                                                         fontStyle: 'italic',
-                                                        borderLeft: '3px solid #667eea',
+                                                        borderLeft: '3px solid #1976d2',
                                                         pl: 2,
                                                         py: 1,
                                                         background: 'rgba(102, 126, 234, 0.05)',
@@ -272,7 +271,7 @@ const PracticePage: React.FC = () => {
                                                         sx={{
                                                             py: 1.5,
                                                             borderRadius: 2,
-                                                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                                            background: '#1976d2',
                                                             fontWeight: 600,
                                                             textTransform: 'none',
                                                         }}

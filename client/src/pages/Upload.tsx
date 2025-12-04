@@ -163,7 +163,7 @@ const UploadPage: React.FC = () => {
     return (
         <Box sx={{
             minHeight: '100vh',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: '#1976d2',
             py: 6,
         }}>
             <Container maxWidth="md">
@@ -208,7 +208,6 @@ const UploadPage: React.FC = () => {
 
                 <Card sx={{
                     borderRadius: 3,
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
                     background: 'rgba(255,255,255,0.98)',
                 }}>
                     <CardContent sx={{ p: 4 }}>
@@ -225,7 +224,7 @@ const UploadPage: React.FC = () => {
                                     }}
                                     sx={{
                                         '& .MuiTabs-indicator': {
-                                            backgroundColor: '#667eea',
+                                            backgroundColor: '#1976d2',
                                         },
                                     }}
                                 >
@@ -239,7 +238,7 @@ const UploadPage: React.FC = () => {
                                             fontSize: '1rem',
                                             fontWeight: 600,
                                             '&.Mui-selected': {
-                                                color: '#667eea',
+                                                color: '#1976d2',
                                             },
                                         }}
                                     />
@@ -253,7 +252,7 @@ const UploadPage: React.FC = () => {
                                             fontSize: '1rem',
                                             fontWeight: 600,
                                             '&.Mui-selected': {
-                                                color: '#667eea',
+                                                color: '#1976d2',
                                             },
                                         }}
                                     />
@@ -265,7 +264,7 @@ const UploadPage: React.FC = () => {
                             {/* Title Field */}
                             <Box sx={{ mb: 3 }}>
                                 <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <Description sx={{ color: '#667eea' }} />
+                                    <Description sx={{ color: '#1976d2' }} />
                                     Title
                                 </Typography>
                                 <TextField
@@ -279,7 +278,7 @@ const UploadPage: React.FC = () => {
                                         '& .MuiOutlinedInput-root': {
                                             borderRadius: 2,
                                             '&.Mui-focused fieldset': {
-                                                borderColor: '#667eea',
+                                                borderColor: '#1976d2',
                                             },
                                         },
                                     }}
@@ -290,7 +289,7 @@ const UploadPage: React.FC = () => {
                             {uploadMode === 'text' ? (
                                 <Box sx={{ mb: 4 }}>
                                     <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <Description sx={{ color: '#667eea' }} />
+                                        <Description sx={{ color: '#1976d2' }} />
                                         Study Notes
                                     </Typography>
                                     <TextField
@@ -306,7 +305,7 @@ const UploadPage: React.FC = () => {
                                             '& .MuiOutlinedInput-root': {
                                                 borderRadius: 2,
                                                 '&.Mui-focused fieldset': {
-                                                    borderColor: '#667eea',
+                                                    borderColor: '#1976d2',
                                                 },
                                             },
                                             '& .MuiInputBase-root': {
@@ -319,7 +318,7 @@ const UploadPage: React.FC = () => {
                             ) : (
                                 <Box sx={{ mb: 4 }}>
                                     <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <PictureAsPdf sx={{ color: '#667eea' }} />
+                                        <PictureAsPdf sx={{ color: '#1976d2' }} />
                                         Upload PDF
                                     </Typography>
                                     <Box
@@ -349,14 +348,14 @@ const UploadPage: React.FC = () => {
                                                     <Chip
                                                         label={`${(pdfFile.size / 1024 / 1024).toFixed(2)} MB`}
                                                         size="small"
-                                                        sx={{ background: '#667eea', color: 'white' }}
+                                                        sx={{ background: '#1976d2', color: 'white' }}
                                                     />
                                                     <Button
                                                         variant="outlined"
                                                         component="span"
                                                         sx={{
-                                                            borderColor: '#667eea',
-                                                            color: '#667eea',
+                                                            borderColor: '#1976d2',
+                                                            color: '#1976d2',
                                                         }}
                                                     >
                                                         Change File
@@ -376,7 +375,7 @@ const UploadPage: React.FC = () => {
                                                         component="span"
                                                         startIcon={<CloudUpload />}
                                                         sx={{
-                                                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                                            background: '#1976d2',
                                                         }}
                                                     >
                                                         Select PDF File
@@ -391,7 +390,7 @@ const UploadPage: React.FC = () => {
                             {/* Question Count Options */}
                             <Box sx={{ mb: 4 }}>
                                 <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <AutoAwesome sx={{ color: '#667eea' }} />
+                                    <AutoAwesome sx={{ color: '#1976d2' }} />
                                     Number of Questions (max 40)
                                 </Typography>
                                 <FormControl component="fieldset">
@@ -402,11 +401,11 @@ const UploadPage: React.FC = () => {
                                     >
                                         <FormControlLabel
                                             value="5"
-                                            control={<Radio sx={{ '&.Mui-checked': { color: '#667eea' } }} />}
+                                            control={<Radio sx={{ '&.Mui-checked': { color: '#1976d2' } }} />}
                                             label={<Typography sx={{ fontWeight: 500 }}>5 questions - Quick review</Typography>}
                                             sx={{
                                                 border: '2px solid',
-                                                borderColor: questionOption === '5' ? '#667eea' : 'rgba(0,0,0,0.12)',
+                                                borderColor: questionOption === '5' ? '#1976d2' : 'rgba(0,0,0,0.12)',
                                                 borderRadius: 2,
                                                 px: 2,
                                                 py: 1,
@@ -416,11 +415,11 @@ const UploadPage: React.FC = () => {
                                         />
                                         <FormControlLabel
                                             value="10"
-                                            control={<Radio sx={{ '&.Mui-checked': { color: '#667eea' } }} />}
+                                            control={<Radio sx={{ '&.Mui-checked': { color: '#1976d2' } }} />}
                                             label={<Typography sx={{ fontWeight: 500 }}>10 questions - Standard practice</Typography>}
                                             sx={{
                                                 border: '2px solid',
-                                                borderColor: questionOption === '10' ? '#667eea' : 'rgba(0,0,0,0.12)',
+                                                borderColor: questionOption === '10' ? '#1976d2' : 'rgba(0,0,0,0.12)',
                                                 borderRadius: 2,
                                                 px: 2,
                                                 py: 1,
@@ -430,11 +429,11 @@ const UploadPage: React.FC = () => {
                                         />
                                         <FormControlLabel
                                             value="20"
-                                            control={<Radio sx={{ '&.Mui-checked': { color: '#667eea' } }} />}
+                                            control={<Radio sx={{ '&.Mui-checked': { color: '#1976d2' } }} />}
                                             label={<Typography sx={{ fontWeight: 500 }}>20 questions - Deep dive</Typography>}
                                             sx={{
                                                 border: '2px solid',
-                                                borderColor: questionOption === '20' ? '#667eea' : 'rgba(0,0,0,0.12)',
+                                                borderColor: questionOption === '20' ? '#1976d2' : 'rgba(0,0,0,0.12)',
                                                 borderRadius: 2,
                                                 px: 2,
                                                 py: 1,
@@ -444,7 +443,7 @@ const UploadPage: React.FC = () => {
                                         />
                                         <FormControlLabel
                                             value="custom"
-                                            control={<Radio sx={{ '&.Mui-checked': { color: '#667eea' } }} />}
+                                            control={<Radio sx={{ '&.Mui-checked': { color: '#1976d2' } }} />}
                                             label={
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                                     <Typography sx={{ fontWeight: 500 }}>Custom:</Typography>
@@ -467,7 +466,7 @@ const UploadPage: React.FC = () => {
                                                                 width: '100px',
                                                                 '& .MuiOutlinedInput-root': {
                                                                     '&.Mui-focused fieldset': {
-                                                                        borderColor: '#667eea',
+                                                                        borderColor: '#1976d2',
                                                                     },
                                                                 },
                                                             }}
@@ -479,7 +478,7 @@ const UploadPage: React.FC = () => {
                                             }
                                             sx={{
                                                 border: '2px solid',
-                                                borderColor: questionOption === 'custom' ? '#667eea' : 'rgba(0,0,0,0.12)',
+                                                borderColor: questionOption === 'custom' ? '#1976d2' : 'rgba(0,0,0,0.12)',
                                                 borderRadius: 2,
                                                 px: 2,
                                                 py: 1,
@@ -502,7 +501,7 @@ const UploadPage: React.FC = () => {
                                 sx={{
                                     py: 2,
                                     borderRadius: 2,
-                                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                    background: '#1976d2',
                                     fontWeight: 600,
                                     fontSize: '1.1rem',
                                     textTransform: 'none',

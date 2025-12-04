@@ -52,8 +52,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon, label, value, color, showProg
       sx={{
         p: 3,
         borderRadius: 2,
-        background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+        background: 'white',
       }}
     >
       <Stack direction="row" alignItems="center" spacing={2} mb={showProgress ? 2 : 0}>
@@ -165,7 +164,6 @@ const UserStats = () => {
     <Card
       sx={{
         borderRadius: 3,
-        boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
         background: 'rgba(255,255,255,0.98)',
       }}
     >
@@ -197,7 +195,7 @@ const UserStats = () => {
                 icon={<School />}
                 label="Questions Today"
                 value={stats.questionsAnsweredToday}
-                color="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                color="#1976d2"
                 showProgress
                 goal={stats.dailyQuestionGoal}
               />
@@ -205,7 +203,7 @@ const UserStats = () => {
                 icon={<CloudUpload />}
                 label="Uploads Today"
                 value={stats.uploadsToday}
-                color="linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
+                color="#1976d2"
                 showProgress
                 goal={stats.dailyUploadGoal}
               />
@@ -216,13 +214,13 @@ const UserStats = () => {
                 icon={<TrendingUp />}
                 label="Total Questions"
                 value={stats.lifetimeQuestionsAnswered}
-                color="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"
+                color="#1976d2"
               />
               <StatCard
                 icon={<CloudUpload />}
                 label="Total Uploads"
                 value={stats.lifetimeUploads}
-                color="linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)"
+                color="#1976d2"
               />
             </Box>
 
@@ -231,13 +229,13 @@ const UserStats = () => {
                 icon={<LocalFireDepartment />}
                 label="Current Streak"
                 value={stats.currentStreak}
-                color="linear-gradient(135deg, #fa709a 0%, #fee140 100%)"
+                color="#1976d2"
               />
               <StatCard
                 icon={<EmojiEvents />}
                 label="Goals Achieved"
                 value={stats.daysGoalsMet}
-                color="linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)"
+                color="#1976d2"
               />
             </Box>
           </Stack>

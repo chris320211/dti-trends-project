@@ -32,7 +32,7 @@ const DailyGoalEditor: React.FC<DailyGoalEditorProps> = ({
     <Stack spacing={3}>
       <Box>
         <Stack direction="row" alignItems="center" spacing={1} mb={1}>
-          <Flag sx={{ color: '#667eea', fontSize: 28 }} />
+          <Flag sx={{ color: '#1976d2', fontSize: 28 }} />
           <Typography variant="h5" sx={{ fontWeight: 700, color: 'text.primary' }}>
             Edit Daily Goals
           </Typography>
@@ -52,7 +52,7 @@ const DailyGoalEditor: React.FC<DailyGoalEditorProps> = ({
                 width: 32,
                 height: 32,
                 borderRadius: '8px',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: '#1976d2',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -75,13 +75,10 @@ const DailyGoalEditor: React.FC<DailyGoalEditorProps> = ({
               '& .MuiOutlinedInput-root': {
                 borderRadius: 2,
                 '& fieldset': {
-                  borderColor: 'rgba(102, 126, 234, 0.3)',
-                },
-                '&:hover fieldset': {
-                  borderColor: 'rgba(102, 126, 234, 0.5)',
+                  borderColor: 'rgba(25, 118, 210, 0.3)',
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: '#667eea',
+                  borderColor: '#1976d2',
                 },
               },
             }}
@@ -95,7 +92,7 @@ const DailyGoalEditor: React.FC<DailyGoalEditorProps> = ({
                 width: 32,
                 height: 32,
                 borderRadius: '8px',
-                background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                background: '#1976d2',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -118,13 +115,10 @@ const DailyGoalEditor: React.FC<DailyGoalEditorProps> = ({
               '& .MuiOutlinedInput-root': {
                 borderRadius: 2,
                 '& fieldset': {
-                  borderColor: 'rgba(240, 147, 251, 0.3)',
-                },
-                '&:hover fieldset': {
-                  borderColor: 'rgba(240, 147, 251, 0.5)',
+                  borderColor: 'rgba(25, 118, 210, 0.3)',
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: '#f093fb',
+                  borderColor: '#1976d2',
                 },
               },
             }}
@@ -141,15 +135,10 @@ const DailyGoalEditor: React.FC<DailyGoalEditorProps> = ({
           sx={{
             py: 1.5,
             borderRadius: 2,
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: '#1976d2',
             fontWeight: 600,
             textTransform: 'none',
             fontSize: '1rem',
-            boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #5568d3 0%, #65408b 100%)',
-              boxShadow: '0 6px 16px rgba(102, 126, 234, 0.4)',
-            },
           }}
         >
           Save Changes
@@ -167,10 +156,6 @@ const DailyGoalEditor: React.FC<DailyGoalEditorProps> = ({
             fontWeight: 600,
             textTransform: 'none',
             fontSize: '1rem',
-            '&:hover': {
-              borderColor: 'rgba(0,0,0,0.4)',
-              backgroundColor: 'rgba(0,0,0,0.04)',
-            },
           }}
         >
           Cancel

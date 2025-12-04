@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CircularProgress, Alert, Box, Collapse } from "@mui/material";
+import { Card, CardContent, CircularProgress, Alert, Box } from "@mui/material";
 import DailyGoalDisplay from "./DailyGoalDisplay";
 import DailyGoalEditor from "./DailyGoalEditor";
 import { auth } from "../firebase";
@@ -121,7 +121,6 @@ const DailyGoalPanel: React.FC = () => {
     <Card
       sx={{
         borderRadius: 3,
-        boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
         background: 'rgba(255,255,255,0.98)',
         height: 'fit-content',
       }}
@@ -133,16 +132,16 @@ const DailyGoalPanel: React.FC = () => {
           </Box>
         ) : (
           <>
-            <Collapse in={!!error}>
+            {error && (
               <Alert severity="error" sx={{ mb: 2 }}>
                 {error}
               </Alert>
-            </Collapse>
-            <Collapse in={!!success}>
+            )}
+            {success && (
               <Alert severity="success" sx={{ mb: 2 }}>
                 {success}
               </Alert>
-            </Collapse>
+            )}
 
             {!error && (
               <>

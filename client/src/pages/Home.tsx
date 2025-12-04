@@ -25,7 +25,7 @@ const HomePage: React.FC = () => {
   return (
     <Box sx={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      background: '#1976d2',
       py: 6,
     }}>
       <Container maxWidth="md">
@@ -54,7 +54,6 @@ const HomePage: React.FC = () => {
 
         <Card sx={{
           borderRadius: 3,
-          boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
           background: 'rgba(255,255,255,0.98)',
         }}>
           <CardContent sx={{ p: 4 }}>
@@ -63,7 +62,7 @@ const HomePage: React.FC = () => {
               sx={{
                 fontWeight: 600,
                 mb: 3,
-                color: '#667eea',
+                color: '#1976d2',
               }}
             >
               About Bear Study Buddy
@@ -72,7 +71,7 @@ const HomePage: React.FC = () => {
             <List>
               <ListItem sx={{ py: 2 }}>
                 <ListItemIcon>
-                  <CloudUpload sx={{ color: '#667eea', fontSize: 32 }} />
+                  <CloudUpload sx={{ color: '#1976d2', fontSize: 32 }} />
                 </ListItemIcon>
                 <ListItemText
                   primary="Upload Notes"
@@ -83,7 +82,7 @@ const HomePage: React.FC = () => {
 
               <ListItem sx={{ py: 2 }}>
                 <ListItemIcon>
-                  <School sx={{ color: '#667eea', fontSize: 32 }} />
+                  <School sx={{ color: '#1976d2', fontSize: 32 }} />
                 </ListItemIcon>
                 <ListItemText
                   primary="View Practice Questions"
@@ -94,7 +93,7 @@ const HomePage: React.FC = () => {
 
               <ListItem sx={{ py: 2 }}>
                 <ListItemIcon>
-                  <AssignmentTurnedIn sx={{ color: '#667eea', fontSize: 32 }} />
+                  <AssignmentTurnedIn sx={{ color: '#1976d2', fontSize: 32 }} />
                 </ListItemIcon>
                 <ListItemText
                   primary="Track Your Progress"
@@ -105,7 +104,7 @@ const HomePage: React.FC = () => {
 
               <ListItem sx={{ py: 2 }}>
                 <ListItemIcon>
-                  <TrendingUp sx={{ color: '#667eea', fontSize: 32 }} />
+                  <TrendingUp sx={{ color: '#1976d2', fontSize: 32 }} />
                 </ListItemIcon>
                 <ListItemText
                   primary="View Stats"
