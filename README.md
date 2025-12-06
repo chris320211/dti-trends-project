@@ -5,6 +5,7 @@ cp .env.example .env
 
 ### Start Up:
 
+npm run install
 docker-compose up --build
 
 ### Stop Application:
