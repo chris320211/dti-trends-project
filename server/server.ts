@@ -17,7 +17,7 @@ const port = 1010;
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
+    fileSize: 10 * 1024 * 1024,
   },
   fileFilter: (req, file, cb) => {
     if (file.mimetype === 'application/pdf') {
@@ -446,7 +446,7 @@ Respond ONLY with valid JSON, no additional text.`;
     const noteData = {
       userId,
       title,
-      notes: pdfText.substring(0, 5000), // Store first 5000 chars of PDF text
+      notes: pdfText.substring(0, 5000),
       summary: parsedResponse.summary,
       questions: questionsArray,
       sourceType: 'pdf',

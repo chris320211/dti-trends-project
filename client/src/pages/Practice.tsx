@@ -73,7 +73,7 @@ const PracticePage: React.FC = () => {
 
     const handleBackToList = () => {
         setSelectedNote(null);
-        fetchNotes(); // Refresh notes when going back
+        fetchNotes();
     };
 
     const handleDeleteNote = async (noteId: string) => {

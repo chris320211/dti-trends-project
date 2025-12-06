@@ -49,7 +49,7 @@ const UploadPage: React.FC = () => {
                 setError('Please upload a PDF file');
                 return;
             }
-            if (file.size > 10 * 1024 * 1024) { // 10MB limit
+            if (file.size > 10 * 1024 * 1024) {
                 setError('File size must be less than 10MB');
                 return;
             }
@@ -212,7 +212,6 @@ const UploadPage: React.FC = () => {
                 }}>
                     <CardContent sx={{ p: 4 }}>
                         <Box component="form" onSubmit={handleUpload}>
-                            {/* Upload Mode Tabs */}
                             <Box sx={{ mb: 4 }}>
                                 <Tabs
                                     value={uploadMode}
@@ -261,7 +260,6 @@ const UploadPage: React.FC = () => {
 
                             <Divider sx={{ mb: 4 }} />
 
-                            {/* Title Field */}
                             <Box sx={{ mb: 3 }}>
                                 <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}>
                                     <Description sx={{ color: '#1976d2' }} />
@@ -285,7 +283,6 @@ const UploadPage: React.FC = () => {
                                 />
                             </Box>
 
-                            {/* Content Input - Text or PDF */}
                             {uploadMode === 'text' ? (
                                 <Box sx={{ mb: 4 }}>
                                     <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -387,7 +384,6 @@ const UploadPage: React.FC = () => {
                                 </Box>
                             )}
 
-                            {/* Question Count Options */}
                             <Box sx={{ mb: 4 }}>
                                 <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}>
                                     <AutoAwesome sx={{ color: '#1976d2' }} />
@@ -490,7 +486,6 @@ const UploadPage: React.FC = () => {
                                 </FormControl>
                             </Box>
 
-                            {/* Submit Button */}
                             <Button
                                 type="submit"
                                 variant="contained"
